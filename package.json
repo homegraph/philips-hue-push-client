@@ -1,6 +1,6 @@
 {
   "name": "@homegraph/philips-hue-push-client",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "src/index.js",
   "repository": "git@github.com:homegraph/philips-hue-push-client.git",
   "author": "Paolo Tremadio <hello@paolotremadio.com>",
