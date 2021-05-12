@@ -1,12 +1,13 @@
 const debug = require('debug')('philips-hue-push-client/parse-message');
 
-const parseUpdateMessage = (data) => data.map(({
+const parseUpdateMessage = (data, creationTime) => data.map(({
   id_v1: idv1, type, id: idv2, ...rest
 }) => {
   const [resource, id] = idv1.split('/').filter(Boolean);
 
   return {
     resource,
+    creationTime,
     idv1: id,
     idv2,
     ...rest,
@@ -14,14 +15,14 @@ const parseUpdateMessage = (data) => data.map(({
 });
 
 const parseMessage = (message) => {
-  const { type: messageType, data } = message;
+  const { type: messageType, creationtime: creationTime, data } = message;
 
   if (messageType !== 'update') {
     debug('Message type not supported', message);
     return [];
   }
 
-  return parseUpdateMessage(data);
+  return parseUpdateMessage(data, creationTime);
 };
 
 module.exports = {
