@@ -39,6 +39,7 @@ Payload example:
   "resource": "lights",
   "idv1": "38",
   "idv2": "3dba6784-3fa6-4e51-979c-daed68cad240",
+  "creationTime": "2021-01-01T15:32:04Z",
   "dimming": { "brightness": 100 },
   "color": { "xy": { "x": 0.3691, "y": 0.3719 } },
   "color_temperature": { "mirek": 233 }
