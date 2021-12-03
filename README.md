@@ -1,34 +1,36 @@
 # About this project
 
-Recent versions of the Hue Bridge firmware are exposing an unreleased new API version for the Hue system. The API v2 does support "push" style notifications for every change in the system, without the need for polling the Bridge.
+Recent versions of the Hue Bridge firmware are exposing a new API version for the Hue system. The API v2 does support "push" style notifications for every change in the system, without the need for polling the Bridge.
 
-We know little about the new APIs; this project is based on reverse engineering of the APIs and it is subject to change at any time.
+[Read the official documentation](https://developers.meethue.com/develop/hue-api-v2/migration-guide-to-the-new-hue-api/#Event%20Stream)
+
 
 # How are notifications implemented
 
-The Hue Bridge is now exposing an endpoint using [Nchan](https://nchan.io/#http-multipart-mixed) technology (supporting only HTTP multipart/mixed method at the moment).
+The Hue Bridge is now exposing an endpoint using [Server-Sent Events (SSE)](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events).
 
 The new APIs are **ONLY available when using HTTPS** so make sure you're connecting using HTTPS.
 
-## What do we know so far
-- Here's a list of [exposed endpoints](https://pastebin.com/hE68CpMc)
-- Here's some [sample data captured from a Hue Bridge](https://pastebin.com/xFBLwNnz)
-- Here's the **[full message schema](https://pastebin.com/hyMhMPRY)**
+This library will automatically try to reconnect on failure.
 
 # How to use this package
 
 ```javascript
-const { NchanClient } = require('@homegraph/philips-hue-push-client');
+const { SSEClient } = require('@homegraph/philips-hue-push-client');
 
-const huePush = new NchanClient(
+const huePush = new SSEClient(
   'https://YOUR_BRIDGE_IP:443',
   'YOUR_API_KEY',
 );
 
-huePush.on('update', (data) => console.log('RECEIVED UPDATE====', data));
+huePush.on('connected', () => console.log('Connected to the Hue Bridge'));
+huePush.on('update', (data) => console.log('UPDATE RECEIVED', data));
+huePush.on('error', (err) => console.error('ERROR RECEIVED, implement your logic here', err));
 
-// Note: this method will throw on network errors / timeouts / disconnections. Please implement your own logic for handling failures.
 huePush.connect();
+
+// To close the connection with the bridge:
+// huePush.close();
 ```
 
 # `update` event spec
@@ -49,4 +51,4 @@ Payload example:
 - `resource` is the Hue API v1 resource name (e.g. `lights`, `groups`, `sensors`, etc)
 - `idv1` is the Hue API v1 resource ID (in this example this light is available under `/lights/38`)
 - `idv2` is the Hue API v2 resource ID. It looks like the API v2 is using UUIDs instead of incremental numeric IDs
-- for all the remaining properties
+- all remaining props as per [documentation](https://developers.meethue.com/develop/hue-api-v2/)

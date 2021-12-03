@@ -1,5 +1,5 @@
-const NchanClient = require('./nchan-client');
+const SSEClient = require('./sse-client');
 
 module.exports = {
-  NchanClient,
+  SSEClient,
 };

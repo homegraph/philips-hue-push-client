@@ -15,12 +15,10 @@
   },
   "dependencies": {
     "debug": "^4.3.1",
-    "got": "^11.8.2",
-    "split2": "^3.2.2"
+    "eventsource": "^1.1.0"
   },
   "devDependencies": {
     "@homegraph/eslint-config-hg-base": "^0.1.0",
-    "nodemon": "^2.0.7",
     "np": "^7.4.0"
   }
 }
