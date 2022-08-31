@@ -3,12 +3,14 @@ const debug = require('debug')('philips-hue-push-client/parse-message');
 const parseUpdateMessage = (data, creationTime) => data.map(({
   id_v1: idv1, type, id: idv2, ...rest
 }) => {
-  const [resource, id] = idv1.split('/').filter(Boolean);
+  // Note: cast `idv1` as string because resources that exists only on API v2 won't have the `id_v1` field!
+  const [resource, id] = String(idv1).split('/').filter(Boolean);
 
   return {
-    resource,
+    resource: idv1 ? resource : null,
+    resourcev2: type || null,
     creationTime,
-    idv1: id,
+    idv1: id || null,
     idv2,
     ...rest,
   };
