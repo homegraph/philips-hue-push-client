@@ -1,20 +1,11 @@
 const debug = require('debug')('philips-hue-push-client/parse-message');
 
 const parseUpdateMessage = (data, creationTime) => data.map(({
-  id_v1: idv1, type, id: idv2, ...rest
-}) => {
-  // Note: cast `idv1` as string because resources that exists only on API v2 won't have the `id_v1` field!
-  const [resource, id] = String(idv1).split('/').filter(Boolean);
-
-  return {
-    resource: idv1 ? resource : null,
-    resourcev2: type || null,
-    creationTime,
-    idv1: id || null,
-    idv2,
-    ...rest,
-  };
-});
+  id_v1: idv1, ...rest
+}) => ({
+  creationTime,
+  ...rest,
+}));
 
 const parseMessage = (message) => {
   const { type: messageType, creationtime: creationTime, data } = message;
@@ -34,7 +25,7 @@ module.exports = {
     // Parse each message and merge updates from different zigbee clusters in a single payload
     messages.forEach((message) => {
       parseMessage(message).forEach((payload) => {
-        const resId = `${payload.resource}/${payload.idv1}`;
+        const resId = `${payload.type}/${payload.id}`;
 
         mergedResourcePayloads[resId] = {
           ...mergedResourcePayloads[resId] || {},
